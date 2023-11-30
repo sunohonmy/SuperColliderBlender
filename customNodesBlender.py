@@ -74,8 +74,9 @@ class SinOscNode(SuperColliderTreeNode, Node):
         add = self.inputs["add"].default_value
 
         # Format as SuperCollider code
+         
         sc_code = f"var freq = {frequency}, phase = {phase}, mul = {mul}, add = {add};\n"
-        sc_code += "SinOsc.ar(freq, phase, mul, add);"
+        sc_code += f"SinOsc.ar(freq, phase, mul, add);"
         return sc_code
 
  #Saw node   
@@ -319,7 +320,7 @@ class OutputNode(SuperColliderTreeNode, Node):
     
     def generate_scd_code_end(self):
         # Format as SuperCollider code
-        sc_code = f")"
+        sc_code = f"\n )"
         
         return sc_code
 
