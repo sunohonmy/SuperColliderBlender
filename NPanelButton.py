@@ -41,15 +41,15 @@ class IterateNodes(bpy.types.Operator):
                 visited.add(node)
                 print(node.name)
                 # Assuming all your nodes have a method called 'generate_scd_code'
-                """if hasattr(node, 'generate_scd_code'):
-                    scd_code += node.generate_scd_code()"""
+                if hasattr(node, 'generate_scd_code'):
+                    scd_code += node.generate_scd_code()
 
                 for input_socket in node.inputs:
                     for link in input_socket.links:
                         queue.append(link.from_node)
 
-        """scd_code += output_node.generate_scd_code_end()
-        print(scd_code)  # or handle the scd_code as needed"""
+        scd_code += output_node.generate_scd_code_end()
+        print(scd_code)  # or handle the scd_code as needed
 
         return {'FINISHED'}
 
