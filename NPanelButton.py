@@ -39,7 +39,6 @@ class IterateNodes(bpy.types.Operator):
             node = queue.pop()
             if node not in visited:
                 visited.append(node)
-                #print(node.name)
 
                 for input_socket in node.inputs:
                     for link in input_socket.links:
