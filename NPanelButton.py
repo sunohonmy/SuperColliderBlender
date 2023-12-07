@@ -39,7 +39,7 @@ class IterateNodes(bpy.types.Operator):
             node = queue.popleft()
             if node not in visited:
                 visited.add(node)
-                print(node.name)
+                #print(node.name)
                 # Assuming all your nodes have a method called 'generate_scd_code'
                 if hasattr(node, 'generate_scd_code'):
                     scd_code += node.generate_scd_code()
