@@ -161,7 +161,7 @@ class PulseNode(SuperColliderTreeNode, Node):
 
     def init(self, context):
         self.inputs.new('NodeSocketFloat', "frequency").default_value = 440.0
-        self.inputs.new('NodeSocketFloat', "Width").default_value = 0.5
+        self.inputs.new('NodeSocketFloat', "width").default_value = 0.5
         self.inputs.new('NodeSocketFloat', "mul").default_value = 1.0
         self.inputs.new('NodeSocketFloat', "add").default_value = 0.0
 
@@ -199,7 +199,7 @@ class PulseNode(SuperColliderTreeNode, Node):
             from_node = self.inputs["add"].links[0].from_node
             add = f"{from_node.name.replace('.', '_').lower()}"
         else:
-            add = self.input['add'].default_value
+            add = self.inputs['add'].default_value
 
         # Format as SuperCollider code
         sc_code = f"var {node_id}_freq = {frequency}, {node_id}_width = {width}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
@@ -302,7 +302,6 @@ class EnvelopeNode(SuperColliderTreeNode, Node):
     release: bpy.props.FloatProperty(name="release", default=0.0)
 
     def init(self, context):
-        self.inputs.new('NodeSocketFloat', "input").default_value = 0.0
         self.inputs.new('NodeSocketFloat', "attack").default_value = 0.0
         self.inputs.new('NodeSocketFloat', "decay").default_value = 0.0
         self.inputs.new('NodeSocketFloat', "sustain").default_value = 0.0

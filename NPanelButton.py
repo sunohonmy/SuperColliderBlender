@@ -9,7 +9,7 @@ class IterateNodes(bpy.types.Operator):
 
     def execute(self, context):
         supercollider_tree = None
-        # Assuming 'SuperColliderTree' is the name of your custom node tree
+
         for tree in bpy.data.node_groups:
             if tree.bl_idname == 'SuperColliderTree':
                 supercollider_tree = tree
@@ -22,7 +22,7 @@ class IterateNodes(bpy.types.Operator):
         # Identify the output node
         output_node = None
         for node in supercollider_tree.nodes:
-            if node.bl_idname == "OutputNodeType":  # Replace with your output node's bl_idname
+            if node.bl_idname == "OutputNodeType":
                 output_node = node
                 break
 
@@ -31,25 +31,33 @@ class IterateNodes(bpy.types.Operator):
             return {'CANCELLED'}
 
         # Perform BFS starting from the output node
-        visited = set()
+        visited = deque([])
         queue = deque([output_node])
-        scd_code = ""
+        scd_code = output_node.generate_scd_code()
 
         while queue:
-            node = queue.popleft()
+            node = queue.pop()
             if node not in visited:
-                visited.add(node)
+                visited.append(node)
                 #print(node.name)
-                # Assuming all your nodes have a method called 'generate_scd_code'
-                if hasattr(node, 'generate_scd_code'):
-                    scd_code += node.generate_scd_code()
+
+                """if hasattr(node, 'generate_scd_code'):
+                    scd_code += node.generate_scd_code()"""
 
                 for input_socket in node.inputs:
                     for link in input_socket.links:
                         queue.append(link.from_node)
 
+        while len(visited) > 1:
+            node = visited[-1]
+            if hasattr(node, 'generate_scd_code'):
+                    scd_code += node.generate_scd_code()
+            visited.pop()
+            
         scd_code += output_node.generate_scd_code_end()
-        print(scd_code)  # or handle the scd_code as needed
+        print(scd_code)
+        to_scd = open("/Users/up2071478/Desktop/blenderSCD.scd", "w")
+        to_scd.write(scd_code)
 
         return {'FINISHED'}
 
