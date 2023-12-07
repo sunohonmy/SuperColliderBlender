@@ -7,6 +7,9 @@ class IterateNodes(bpy.types.Operator):
     bl_idname = "node.iterate_nodes"
     bl_label = "Iterate Nodes"
 
+    #Filepath property for saving the file
+    filepath: bpy.props.StringProperty(subtype="FILE_PATH")
+
     def execute(self, context):
         supercollider_tree = None
 
@@ -51,11 +54,23 @@ class IterateNodes(bpy.types.Operator):
             visited.pop()
             
         scd_code += output_node.generate_scd_code_end()
-        print(scd_code)
-        to_scd = open("/Users/up2071478/Desktop/blenderSCD.scd", "w")
-        to_scd.write(scd_code)
+
+        # Write the generated code to the specified file
+        if self.filepath:  # Check if a file path is specified
+            try:
+                with open(self.filepath, 'w') as file:
+                    file.write(scd_code)
+                self.report({'INFO'}, f"File saved to {self.filepath}")
+            except Exception as e:
+                self.report({'ERROR'}, f"Failed to write file: {e}")
+        else:
+            self.report({'WARNING'}, "No file path specified")
 
         return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
 
 class NODE_EDITOR_PT_CustomPanel(bpy.types.Panel):
     bl_label = "SuperCollider"

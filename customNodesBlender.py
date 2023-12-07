@@ -261,7 +261,7 @@ class ImpulseNode(SuperColliderTreeNode, Node):
 
         # Format as SuperCollider code
         sc_code = f"var {node_id}_freq = {frequency}, {node_id}_phase = {phase}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
-        sc_code += f"var {node_id} = Pulse.ar({node_id}_freq, {node_id}_width, {node_id}_mul, {node_id}_add);\n"
+        sc_code += f"var {node_id} = Pulse.ar({node_id}_freq, {node_id}_phase, {node_id}_mul, {node_id}_add);\n"
         return sc_code
 
 #WhiteNoise node
@@ -412,6 +412,7 @@ class EnvelopeNode(SuperColliderTreeNode, Node):
         #Format as SuperCollider code
         sc_code = f"var {node_id}_gate = {gate}, {node_id}_attack = {attack}, {node_id}_decay = {decay}, {node_id}_sustain = {sustain}, {node_id}_release = {release};\n"
         sc_code += f"var {node_id} = EnvGen.kr(Env.adsr({node_id}_attack, {node_id}_decay, {node_id}_sustain, {node_id}_release), {node_id}_gate, doneAction:2);\n"
+        return sc_code
 
 #==== Filters ====
 class HighPassFilterNode(SuperColliderTreeNode, Node):
@@ -469,6 +470,7 @@ class HighPassFilterNode(SuperColliderTreeNode, Node):
         #Format as SuperCollider code
         sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
         sc_code += f"var {node_id} = HPF.ar({node_id}_input, {node_id}_frequency, {node_id}_mul, {node_id}_add);\n"
+        return sc_code
 
 class LowPassFilterNode(SuperColliderTreeNode, Node):
     bl_idname = 'LowPassFilterNodeType'
@@ -525,6 +527,7 @@ class LowPassFilterNode(SuperColliderTreeNode, Node):
         #Format as SuperCollider code
         sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
         sc_code += f"var {node_id} = LPF.ar({node_id}_input, {node_id}_frequency, {node_id}_mul, {node_id}_add);\n"
+        return sc_code
 
 
 class BandPassFilterNode(SuperColliderTreeNode, Node):
@@ -590,6 +593,7 @@ class BandPassFilterNode(SuperColliderTreeNode, Node):
         #Format as SuperCollider code
         sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_rq = {rq}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
         sc_code += f"var {node_id} = BPF.ar({node_id}_input, {node_id}_frequency, {node_id}_rq, {node_id}_mul, {node_id}_add);\n"
+        return sc_code
 
 class BandRejectFilterNode(SuperColliderTreeNode, Node):
     bl_idname = 'BandRejectFilterNodeType'
@@ -654,6 +658,7 @@ class BandRejectFilterNode(SuperColliderTreeNode, Node):
         #Format as SuperCollider code
         sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_rq = {rq}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
         sc_code += f"var {node_id} = BRF.ar({node_id}_input, {node_id}_frequency, {node_id}_rq, {node_id}_mul, {node_id}_add);\n"
+        return sc_code
 
 #==== Output ====
 class OutputNode(SuperColliderTreeNode, Node):
@@ -709,6 +714,7 @@ node_categories = [
         NodeItem("SinOscNodeType"),
         NodeItem("SawNodeType"),
         NodeItem("PulseNodeType"),
+        NodeItem("ImpulseNodeType"),
         NodeItem("WhiteNoiseNodeType"),
         NodeItem("PinkNoiseNodeType"),
     ]),
@@ -732,6 +738,7 @@ classes = (
     SinOscNode,
     SawNode,
     PulseNode,
+    ImpulseNode,
     WhiteNoiseNode,
     PinkNoiseNode,
     EnvelopeNode,
