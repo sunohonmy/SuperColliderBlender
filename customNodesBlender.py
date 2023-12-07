@@ -97,7 +97,7 @@ class SinOscNode(SuperColliderTreeNode, Node):
         # Format as SuperCollider code
          
         sc_code = f"var {node_id}_freq = {frequency}, {node_id}_phase = {phase}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
-        sc_code += f"var {node_id} = SinOsc.ar({node_id}_freq, {node_id}_phase, mul, {node_id}_add);\n"
+        sc_code += f"var {node_id} = SinOsc.ar({node_id}_freq, {node_id}_phase, {node_id}_mul, {node_id}_add);\n"
         return sc_code
 
  #Saw node   
