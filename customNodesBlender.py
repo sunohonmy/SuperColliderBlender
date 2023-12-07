@@ -95,7 +95,6 @@ class SinOscNode(SuperColliderTreeNode, Node):
             add = self.inputs["add"].default_value
 
         # Format as SuperCollider code
-         
         sc_code = f"var {node_id}_freq = {frequency}, {node_id}_phase = {phase}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
         sc_code += f"var {node_id} = SinOsc.ar({node_id}_freq, {node_id}_phase, {node_id}_mul, {node_id}_add);\n"
         return sc_code
@@ -122,6 +121,33 @@ class SawNode(SuperColliderTreeNode, Node):
     def free(self):
         print("Removing node ", self, ", Goodbye!")
 
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["frequency"].is_linked:
+            from_node = self.inputs["frequency"].links[0].from_node
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            frequency = self.inputs["frequency"].default_value
+
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs["add"].default_value
+
+        # Format as SuperCollider code
+        sc_code = f"var {node_id}_freq = {frequency}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = Saw.ar({node_id}_freq, {node_id}_mul, {node_id}_add);\n"
+        return sc_code
+
 #Pulse node
 class PulseNode(SuperColliderTreeNode, Node):
     bl_idname = 'PulseNodeType'
@@ -147,6 +173,39 @@ class PulseNode(SuperColliderTreeNode, Node):
     def free(self):
         print("Removing node ", self, ", Goodbye!")
 
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["frequency"].is_linked:
+            from_node = self.inputs["frequency"].links[0].from_node
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            frequency = self.inputs["frequency"].default_value
+
+        if self.inputs["width"].is_linked:
+            from_node = self.inputs["width"].links[0].from_node
+            width = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            width = self.inputs["width"].default_value
+
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.input['add'].default_value
+
+        # Format as SuperCollider code
+        sc_code = f"var {node_id}_freq = {frequency}, {node_id}_width = {width}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = Pulse.ar({node_id}_freq, {node_id}_width, {node_id}_mul, {node_id}_add);\n"
+        return sc_code
+
     
 
 #WhiteNoise node
@@ -170,6 +229,27 @@ class WhiteNoiseNode(SuperColliderTreeNode, Node):
     def free(self):
         print("Removing node ", self, ", Goodbye!")
 
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs["add"].default_value
+
+        # Format as SuperCollider code
+        sc_code = f"var {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = WhiteNoise.ar({node_id}_mul, {node_id}_add);\n"
+        return sc_code
+
 #PinkNoise node
 class PinkNoiseNode(SuperColliderTreeNode, Node):
     bl_idname = 'PinkNoiseNodeType'
@@ -190,6 +270,27 @@ class PinkNoiseNode(SuperColliderTreeNode, Node):
 
     def free(self):
         print("Removing node ", self, ", Goodbye!")
+        
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs["add"].default_value
+
+        # Format as SuperCollider code
+        sc_code = f"var {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = PinkNoise.ar({node_id}_mul, {node_id}_add);\n"
+        return sc_code
 
 #==== Envelope ====
 class EnvelopeNode(SuperColliderTreeNode, Node):
