@@ -41,9 +41,6 @@ class IterateNodes(bpy.types.Operator):
                 visited.append(node)
                 #print(node.name)
 
-                """if hasattr(node, 'generate_scd_code'):
-                    scd_code += node.generate_scd_code()"""
-
                 for input_socket in node.inputs:
                     for link in input_socket.links:
                         queue.append(link.from_node)
