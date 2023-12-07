@@ -99,7 +99,7 @@ class SinOscNode(SuperColliderTreeNode, Node):
         sc_code += f"var {node_id} = SinOsc.ar({node_id}_freq, {node_id}_phase, {node_id}_mul, {node_id}_add);\n"
         return sc_code
 
- #Saw node   
+#Saw node   
 class SawNode(SuperColliderTreeNode, Node):
     bl_idname = 'SawNodeType'
     bl_label = "Saw"
@@ -205,6 +205,64 @@ class PulseNode(SuperColliderTreeNode, Node):
         sc_code = f"var {node_id}_freq = {frequency}, {node_id}_width = {width}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
         sc_code += f"var {node_id} = Pulse.ar({node_id}_freq, {node_id}_width, {node_id}_mul, {node_id}_add);\n"
         return sc_code
+    
+#Impulse Node
+class ImpulseNode(SuperColliderTreeNode, Node):
+    bl_idname = 'ImpulseNodeType'
+    bl_label = "Impulse"
+    bl_icon = 'SOUND'
+
+    frequency: bpy.props.FloatProperty(name="frequency", default=440.0)
+    phase: bpy.props.FloatProperty(name="phase", default=0.0)
+    mul: bpy.props.FloatProperty(name="mul", default=1.0)
+    add: bpy.props.FloatProperty(name="add", default=0.0)
+
+    def init(self, context):
+        self.inputs.new('NodeSocketFloat', "frequency").default_value = 440.0
+        self.inputs.new('NodeSocketFloat', "phase").default_value = 0.0
+        self.inputs.new('NodeSocketFloat', "mul").default_value = 1.0
+        self.inputs.new('NodeSocketFloat', "add").default_value = 0.0
+
+        self.outputs.new('NodeSocketFloat', "ar")
+
+    def copy(self, node):
+        print("Copying from node ", node)
+
+    def free(self):
+        print("Removing node ", self, ", Goodbye!")
+
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["frequency"].is_linked:
+            from_node = self.inputs["frequency"].links[0].from_node
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            frequency = self.inputs["frequency"].default_value
+
+        if self.inputs["phase"].is_linked:
+            from_node = self.inputs["phase"].links[0].from_node
+            phase = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            phase = self.inputs["phase"].default_value
+
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs['add'].default_value
+
+        # Format as SuperCollider code
+        sc_code = f"var {node_id}_freq = {frequency}, {node_id}_phase = {phase}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = Pulse.ar({node_id}_freq, {node_id}_width, {node_id}_mul, {node_id}_add);\n"
+        return sc_code
 
 #WhiteNoise node
 class WhiteNoiseNode(SuperColliderTreeNode, Node):
@@ -296,12 +354,14 @@ class EnvelopeNode(SuperColliderTreeNode, Node):
     bl_label = "Envelope"
     bl_icon = 'SOUND'
 
+    gate: bpy.props.FloatProperty(name="gate", default=1.0)
     attack: bpy.props.FloatProperty(name="attack", default=0.0)
     decay: bpy.props.FloatProperty(name="decay", default=0.0)
     sustain: bpy.props.FloatProperty(name="sustain", default=0.0)
     release: bpy.props.FloatProperty(name="release", default=0.0)
 
     def init(self, context):
+        self.inputs.new('NodeSocketFloat', "gate").default_value = 1.0
         self.inputs.new('NodeSocketFloat', "attack").default_value = 0.0
         self.inputs.new('NodeSocketFloat', "decay").default_value = 0.0
         self.inputs.new('NodeSocketFloat', "sustain").default_value = 0.0
@@ -314,6 +374,44 @@ class EnvelopeNode(SuperColliderTreeNode, Node):
 
     def free(self):
         print("Removing node ", self, ", Goodbye!")
+
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["gate"].is_linked:
+            from_node = self.inputs["gate"].links[0].from_node
+            gate = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            gate = self.inputs["gate"].default_value
+
+        if self.inputs["attack"].is_linked:
+            from_node = self.inputs["attack"].links[0].from_node
+            attack = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            attack = self.inputs["attack"].default_value
+
+        if self.inputs["decay"].is_linked:
+            from_node = self.inputs["decay"].links[0].from_node
+            decay = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            decay = self.inputs["decay"].default_value
+
+        if self.inputs["sustain"].is_linked:
+            from_node = self.inputs["sustain"].links[0].from_node
+            sustain = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            sustain = self.inputs["sustain"].default_value
+
+        if self.inputs["release"].is_linked:
+            from_node = self.inputs["release"].links[0].from_node
+            release = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            release = self.inputs["release"].default_value
+
+        #Format as SuperCollider code
+        sc_code = f"var {node_id}_gate = {gate}, {node_id}_attack = {attack}, {node_id}_decay = {decay}, {node_id}_sustain = {sustain}, {node_id}_release = {release};\n"
+        sc_code += f"var {node_id} = EnvGen.kr(Env.adsr({node_id}_attack, {node_id}_decay, {node_id}_sustain, {node_id}_release), {node_id}_gate, doneAction:2);\n"
 
 #==== Filters ====
 class HighPassFilterNode(SuperColliderTreeNode, Node):
@@ -340,6 +438,38 @@ class HighPassFilterNode(SuperColliderTreeNode, Node):
     def free(self):
         print("Removing node ", self, ", Goodbye!")
 
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["input"].is_linked:
+            from_node = self.inputs["input"].links[0].from_node
+            input = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            input = self.inputs["input"].default_value
+
+        if self.inputs["frequency"].is_linked:
+            from_node = self.inputs["frequency"].links[0].from_node
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            frequency = self.inputs["frequency"].default_value
+
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs["add"].default_value
+
+        #Format as SuperCollider code
+        sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = HPF.ar({node_id}_input, {node_id}_frequency, {node_id}_mul, {node_id}_add);\n"
+
 class LowPassFilterNode(SuperColliderTreeNode, Node):
     bl_idname = 'LowPassFilterNodeType'
     bl_label = "LowPassFilter"
@@ -363,6 +493,39 @@ class LowPassFilterNode(SuperColliderTreeNode, Node):
 
     def free(self):
         print("Removing node ", self, ", Goodbye!")
+
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["input"].is_linked:
+            from_node = self.inputs["input"].links[0].from_node
+            input = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            input = self.inputs["input"].default_value
+
+        if self.inputs["frequency"].is_linked:
+            from_node = self.inputs["frequency"].links[0].from_node
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            frequency = self.inputs["frequency"].default_value
+
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs["add"].default_value
+            
+        #Format as SuperCollider code
+        sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = LPF.ar({node_id}_input, {node_id}_frequency, {node_id}_mul, {node_id}_add);\n"
+
 
 class BandPassFilterNode(SuperColliderTreeNode, Node):
     bl_idname = 'BandPassFilterNodeType'
@@ -390,6 +553,44 @@ class BandPassFilterNode(SuperColliderTreeNode, Node):
     def free(self):
         print("Removing node ", self, ", Goodbye!")
 
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["input"].is_linked:
+            from_node = self.inputs["input"].links[0].from_node
+            input = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            input = self.inputs["input"].default_value
+
+        if self.inputs["frequency"].is_linked:
+            from_node = self.inputs["frequency"].links[0].from_node
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            frequency = self.inputs["frequency"].default_value
+
+        if self.inputs["rq"].is_linked:
+            from_node = self.inputs["rq"].links[0].from_node
+            rq = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            rq = self.inputs["rq"].default_value
+
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+            
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs["add"].default_value
+
+        #Format as SuperCollider code
+        sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_rq = {rq}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = BPF.ar({node_id}_input, {node_id}_frequency, {node_id}_rq, {node_id}_mul, {node_id}_add);\n"
+
 class BandRejectFilterNode(SuperColliderTreeNode, Node):
     bl_idname = 'BandRejectFilterNodeType'
     bl_label = "BandRejectFilter"
@@ -415,6 +616,44 @@ class BandRejectFilterNode(SuperColliderTreeNode, Node):
 
     def free(self):
         print("Removing node ", self, ", Goodbye!")
+
+    def generate_scd_code(self):
+        node_id = self.name.replace(".", "_").lower()
+
+        # Get values
+        if self.inputs["input"].is_linked:
+            from_node = self.inputs["input"].links[0].from_node
+            input = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            input = self.inputs["input"].default_value
+
+        if self.inputs["frequency"].is_linked:
+            from_node = self.inputs["frequency"].links[0].from_node
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            frequency = self.inputs["frequency"].default_value
+
+        if self.inputs["rq"].is_linked:
+            from_node = self.inputs["rq"].links[0].from_node
+            rq = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            rq = self.inputs["rq"].default_value
+
+        if self.inputs["mul"].is_linked:
+            from_node = self.inputs["mul"].links[0].from_node
+            mul = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            mul = self.inputs["mul"].default_value
+
+        if self.inputs["add"].is_linked:
+            from_node = self.inputs["add"].links[0].from_node
+            add = f"{from_node.name.replace('.', '_').lower()}"
+        else:
+            add = self.inputs["add"].default_value
+
+        #Format as SuperCollider code
+        sc_code = f"var {node_id}_input = {input}, {node_id}_frequency = {frequency}, {node_id}_rq = {rq}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = BRF.ar({node_id}_input, {node_id}_frequency, {node_id}_rq, {node_id}_mul, {node_id}_add);\n"
 
 #==== Output ====
 class OutputNode(SuperColliderTreeNode, Node):
