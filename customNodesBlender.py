@@ -441,7 +441,7 @@ class OutputNode(SuperColliderTreeNode, Node):
         # Format as SuperCollider code
         from_node = self.inputs["input"].links[0].from_node
         sc_code = f"\n Out.ar(0, {from_node.name.replace('.','_').lower()})\n"
-        sc_code += "}).add\n)"
+        sc_code += "}).add\n)\n \nSynth('from_blender')"
         
         return sc_code
 
