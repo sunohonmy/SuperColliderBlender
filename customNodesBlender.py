@@ -67,37 +67,37 @@ class SinOscNode(SuperColliderTreeNode, Node):
         print("Removing node ", self, ", Goodbye!")
 
     def generate_scd_code(self):
-        node_id = self.name.replace(".", "_")
+        node_id = self.name.replace(".", "_").lower()
 
         # Get values
         if self.inputs["frequency"].is_linked:
             from_node = self.inputs["frequency"].links[0].from_node
-            frequency = f"{from_node.name.replace(".", "_")}"
+            frequency = f"{from_node.name.replace('.', '_').lower()}"
         else:
             frequency = self.inputs["frequency"].default_value
 
         if self.inputs["phase"].is_linked:
             from_node = self.inputs["phase"].links[0].from_node
-            phase = f"{from_node.name.replace('.', '_')}"
+            phase = f"{from_node.name.replace('.', '_').lower()}"
         else:
             phase = self.inputs["phase"].default_value
         
         if self.inputs["mul"].is_linked:
             from_node = self.inputs["mul"].links[0].from_node
-            mul = f"{from_node.name.replace('.', '_')}"
+            mul = f"{from_node.name.replace('.', '_').lower()}"
         else:
             mul = self.inputs["mul"].default_value
 
         if self.inputs["add"].is_linked:
             from_node = self.inputs["add"].links[0].from_node
-            add = f"{from_node.name.replace('.', '_')}"
+            add = f"{from_node.name.replace('.', '_').lower()}"
         else:
             add = self.inputs["add"].default_value
 
         # Format as SuperCollider code
          
-        sc_code = f"var freq = {frequency}, phase = {phase}, mul = {mul}, add = {add};\n"
-        sc_code += f"var {node_id} = SinOsc.ar(freq, phase, mul, add);"
+        sc_code = f"var {node_id}_freq = {frequency}, {node_id}_phase = {phase}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
+        sc_code += f"var {node_id} = SinOsc.ar({node_id}_freq, {node_id}_phase, mul, {node_id}_add);\n"
         return sc_code
 
  #Saw node   
