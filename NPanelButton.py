@@ -33,7 +33,7 @@ class IterateNodes(bpy.types.Operator):
         # Perform BFS starting from the output node
         visited = set()
         queue = deque([output_node])
-        scd_code = output_node.generate_scd_code()
+        scd_code = ""
 
         while queue:
             node = queue.popleft()

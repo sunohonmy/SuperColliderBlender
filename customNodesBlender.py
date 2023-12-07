@@ -206,8 +206,6 @@ class PulseNode(SuperColliderTreeNode, Node):
         sc_code += f"var {node_id} = Pulse.ar({node_id}_freq, {node_id}_width, {node_id}_mul, {node_id}_add);\n"
         return sc_code
 
-    
-
 #WhiteNoise node
 class WhiteNoiseNode(SuperColliderTreeNode, Node):
     bl_idname = 'WhiteNoiseNodeType'
@@ -436,13 +434,15 @@ class OutputNode(SuperColliderTreeNode, Node):
 
     def generate_scd_code(self):
         # Format as SuperCollider code
-        sc_code = f"( \n"
+        sc_code = "( \n SynthDef('from_blender', {\n"
         
         return sc_code
     
     def generate_scd_code_end(self):
         # Format as SuperCollider code
-        sc_code = f"\n )"
+        from_node = self.inputs["input"].links[0].from_node
+        sc_code = f"\n Out.ar(0, {from_node.name.replace('.','_').lower()})\n"
+        sc_code += "}).add\n)"
         
         return sc_code
 
