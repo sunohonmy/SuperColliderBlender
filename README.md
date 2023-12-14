@@ -1,10 +1,10 @@
 # SuperColliderBlender
 
-##AIM:
+## AIM:
 * Visual approach to supercollider
 *
 
-##How to:
+## How to:
 * Go to the scripting tab
 * Open and run the 2 python scripts
 * There should now be a new Editor Type called "SuperCollider"
