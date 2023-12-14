@@ -261,7 +261,7 @@ class ImpulseNode(SuperColliderTreeNode, Node):
 
         # Format as SuperCollider code
         sc_code = f"var {node_id}_freq = {frequency}, {node_id}_phase = {phase}, {node_id}_mul = {mul}, {node_id}_add = {add};\n"
-        sc_code += f"var {node_id} = Impulse.ar({node_id}_freq, {node_id}_phase, {node_id}_mul, {node_id}_add);\n"
+        sc_code += f"var {node_id} = Impulse.kr({node_id}_freq, {node_id}_phase, {node_id}_mul, {node_id}_add);\n"
         return sc_code
 
 #WhiteNoise node
