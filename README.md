@@ -2,10 +2,10 @@
 
 ## AIM:
 * Visual approach to supercollider
-*
+* 
 
 ## How to:
-* Go to the scripting tab
+* Open Blender and go to the scripting tab
 * Open and run the 2 python scripts
 * There should now be a new Editor Type called "SuperCollider"
 * Create a new Node tree
