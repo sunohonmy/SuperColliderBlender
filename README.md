@@ -7,9 +7,9 @@
 1. Open Blender and go to the scripting tab <br />
 2. Open and run the 2 python scripts
 3. There should now be a new Editor Type called "SuperCollider" <br />
-![SuperCollider Editor Type](images/superColliderEditorType.png)
+![SuperCollider Editor Type](Images/superColliderEditorType.png)
 4. Create a new Node tree <br />
-![New node tree](images/newNodeTree.png) <br />
+![New node tree](Images/newNodeTree.png) <br />
 5. Add your nodes, final node should always be the Output node <br />
 ![Screenshot of nodes](/Images/nodes.png) <br />
 6. Within the N-Panel a new tab should be present called "SCD" <br />
