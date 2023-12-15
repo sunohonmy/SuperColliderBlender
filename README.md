@@ -16,7 +16,7 @@
 * Boot supercollider server and run code.
 
 ![Screenshot of nodes](/Images/nodes.png)
-:arrow_down:
+
 ![Screenshot of Run button in N-Panel](/Images/runButton.png)
-:arrow_down:
+
 ![Code to be run in supercollider](/Images/scdCode.png)
